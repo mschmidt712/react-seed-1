@@ -1,0 +1,26 @@
+{
+  "name": "react-seed",
+  "version": "0.1.0",
+  "description": "This is the seed repo for FrontEnd project for Kenzan.com - Linux.com learning series.",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf ./build && rimraf ./reports && mkdir ./reports && mkdir ./reports/test-results",
+    "prebuild": "npm run clean",
+    "lint": "eslint *.js **/**/*.spec.jsx",
+    "build": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenzanlabs/react-seed.git"
+  },
+  "keywords": [
+    "kenzanlabs"
+  ],
+  "author": "rhernandez@kenzan.com",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-preset-env": "^1.5.2",
+    "eslint": "^4.1.1",
+    "rimraf": "^2.6.1"
+  }
+}
