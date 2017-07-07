@@ -34,10 +34,10 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: 'awesome-typescript-loader',
-        exclude: /node_modules/
+        exclude: path.join(__dirname, 'node_modules')
       },
       {
-        test: /\.tsx$/,
+        test: /\.tsx?$/,
         enforce: 'pre',
         loader: 'tslint-loader',
         exclude: /node_modules/
@@ -53,32 +53,24 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader?modules', 'postcss-loader']
-      },
-      {
-        test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader?modules', 'postcss-loader', 'sass-loader']
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
-          'file-loader'
-        ]
-      },
-      {
         test: /\.html$/,
         loader: 'html-loader',
         exclude: path.join(__dirname, './index.html')
-      }, {
-        test: /\.scss/,
+      },
+      {
+        test: /\.(s*)css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: 'css-loader!sass-loader'
+          use: [ 'css-loader', 'sass-loader' ]
         })
-      }, {
+      },
+      {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.(ttf|eot|svg|jpe?g|png|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file-loader'
       }
     ]
   },
@@ -98,6 +90,12 @@ module.exports = {
     new ExtractTextPlugin({
       filename: 'styles.css',
       allChunks: true
+    }),
+    new webpack.ProvidePlugin({ // exposes non-modular vendor globals to webpack
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Tether: 'tether'
     })
   ]
 };
