@@ -10,3 +10,8 @@ Please make sure the following criteria is meet before submitting your pull requ
 1. Ensure the test suite passes (<i>yarn run test</i>).
 1. Make sure your code lints (<i> yarn run lint </i>).
 1. Link to the issue resolved with this PR
+
+## Changes Made
+<!--
+Briefly summarize the changes made
+-->
