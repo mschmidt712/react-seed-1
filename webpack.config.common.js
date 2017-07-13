@@ -13,7 +13,7 @@ module.exports = {
 
   output: {
     path: path.join(__dirname, './build'),
-    filename: '[name].bundle.js',
+    filename: '[name].[chunkhash].bundle.js',
     sourceMapFilename: '[name].map',
     chunkFilename: '[id].chunk.js'
   },
@@ -80,17 +80,21 @@ module.exports = {
       template: 'index.html',
       chunksSortMode: 'dependency'
     }),
+
     new webpack.optimize.CommonsChunkPlugin({
-      name: ['index', 'vendor']
+      name: 'common'
     }),
+
     new ProgressBarPlugin({
       format: chalk.blue('  build ') + '[:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)',
       clear: false
     }),
+
     new ExtractTextPlugin({
       filename: 'styles.css',
       allChunks: true
     }),
+
     new webpack.ProvidePlugin({ // exposes non-modular vendor globals to webpack
       jQuery: 'jquery',
       Tether: 'tether'
