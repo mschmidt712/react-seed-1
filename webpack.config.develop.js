@@ -2,6 +2,7 @@ const commonConfig = require('./webpack.config.common');
 const webpackMerge = require('webpack-merge');
 
 module.exports = webpackMerge(commonConfig, {
+  output: { filename: '[name].bundle.js' },
 
   devServer: {
     port: 9000,
