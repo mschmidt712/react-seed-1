@@ -61,7 +61,7 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
             currentIndex = {this.state.currentIndex}
             onListUpdate={this.updateContacts.bind(this)}/>}/>
             <Route
-              path={this.props.match.url + '/about'}
+              path={this.props.match.url + 'about'}
               component={About as any}
             />
           </Switch>
