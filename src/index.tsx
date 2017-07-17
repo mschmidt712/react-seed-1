@@ -8,7 +8,7 @@ import Bootstrap from './components/bootstrap/bootstrap';
 
 render(
   <Router>
-    <Route path='/' component={Bootstrap}/>
+    <Route path='/' component={Bootstrap as any}/>
   </Router>,
   document.getElementById('app')
 );

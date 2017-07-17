@@ -21,7 +21,7 @@ interface ContactListPropsInterface {
 // TODO, naming convention for variables to be exported TS
 // tslint:disable-next-line
 const ContactList: React.SFC<ContactListPropsInterface> = (props) => {
-  console.log(props.activeContactIndex, '@@@@@@@@@@@@@');
+
   return (
     <div className='list-group contact-list text-left'>
       {props.contacts.map((contact, index) => {
