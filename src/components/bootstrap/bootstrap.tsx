@@ -2,7 +2,7 @@ import 'font-awesome/css/font-awesome.css';
 import './bootstrap.scss';
 
 import * as React from 'react';
-import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link, Switch, RouteComponentProps} from 'react-router-dom';
 
 import Navigation from '../navigation/navigation';
 import Footer from '../footer/footer';
@@ -14,10 +14,7 @@ interface BootstrapStateInterface {
   currentIndex: number;
 }
 
-interface BootstrapPropsInterface {
-  match: {
-    url: string
-  };
+interface BootstrapPropsInterface extends RouteComponentProps<{}> {
 }
 
 interface ContactInterface {
@@ -57,12 +54,14 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
            {/*router moved in order to only manage state in one place*/}
           <Switch>
             <Route exact path={this.props.match.url} render={() => <Home
-            contacts={this.state.contacts}
-            currentIndex = {this.state.currentIndex}
-            onListUpdate={this.updateContacts.bind(this)}/>}/>
+              contacts={this.state.contacts}
+              currentIndex = {this.state.currentIndex}
+              onListUpdate={this.updateContacts.bind(this)}/>}
+            />
+
             <Route
               path={this.props.match.url + 'about'}
-              component={About as any}
+              component={About}
             />
           </Switch>
         </section>
