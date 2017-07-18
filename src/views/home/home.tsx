@@ -97,7 +97,7 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
   }
 
   private renderContactList (contacts: ContactInterface[]) {
-    if (!!contacts.length) {
+    if (contacts.length > 0) {
       return (
         <ContactList
           contacts={this.props.contacts}
