@@ -8,23 +8,37 @@ interface ContactListFormPropsInterface {
 }
 interface ContactListFormStateInterface {
 }
+interface ContactInterface {
+  firstName?: string;
+  middleName?: string;
+  email?: string;
+  lastName?: string;
+  phone?: string;
+  [key: string]: string;
+}
 
 class ContactListForm extends React.Component<ContactListFormPropsInterface, ContactListFormStateInterface> {
   constructor(props: ContactListFormPropsInterface) {
     super(props);
   }
 
-  private handleSubmit(e: Event) {
+  private handleSubmit(e: Event): void {
     e.preventDefault();
-    const formData: {} = {};
+    const formData: ContactInterface = {};
 
     for (const field in this.refs) {
       if (this.refs.hasOwnProperty(field)) {
-        formData[field] = this.refs[field].value;
+        formData[field] = (this.refs[field] as HTMLInputElement).value;
       }
     }
 
     this.props.onSubmit(formData);
+  }
+
+  private handleCancel(e: Event): void {
+    e.preventDefault();
+
+    this.props.onCancel();
   }
 
   public render() {
@@ -80,7 +94,7 @@ class ContactListForm extends React.Component<ContactListFormPropsInterface, Con
               <div className='btn-toolbar'>
                 <button id='addContactBtn' name='addContactBtn' className='btn btn-success' type='submit'>Add Contact
                 </button>
-                <button id='cancel' className='btn btn-danger' onClick={this.props.onCancel}>Cancel</button>
+                <button id='cancel' className='btn btn-danger' onClick={ this.handleCancel.bind(this) }>Cancel</button>
               </div>
             </div>
           </fieldset>
