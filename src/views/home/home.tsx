@@ -2,10 +2,11 @@ import 'font-awesome/css/font-awesome.css';
 import './home.scss';
 
 import * as React from 'react';
-import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
 
 import ContactList from '../../components/contactList/contactList';
 import ContactListForm from '../../components/contactListForm/contactListForm';
+
+import ContactsApi from './../../services/contacts.service';
 
 interface ContactInterface {
   firstName: string;
@@ -14,6 +15,7 @@ interface ContactInterface {
   lastName?: string;
   phone?: string;
   id?: number;
+  image?: string;
 }
 
 interface HomeStateInterface {
@@ -53,10 +55,31 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
   }
 
   private onNewContactSubmit(contact: ContactInterface) {
+    if (contact.email) {
+      // HTTP call to gravatar.
+      ContactsApi
+        .getAvatar(contact.email)
+          .then(res => {
+            const avatar = res.data.entry[0].thumbnailUrl;
+            contact.image = avatar;
+
+            this.setState({
+              currentContact: newContacts[contact.id]
+            });
+          })
+          .catch(e => {
+            console.log('Error ==>', e);
+          });
+    }
     contact.id = this.props.contacts.length;
     const newContacts = [...this.props.contacts, contact];
 
-    this.updateContacts(newContacts, contact.id);
+    ContactsApi
+      .setContacts(newContacts)
+      .then(contacts => {
+        this.updateContacts(contacts, contact.id);
+      });
+
     this.setState({
       isFormOpen: false,
       currentContact: newContacts[contact.id]

@@ -2,12 +2,14 @@ import 'font-awesome/css/font-awesome.css';
 import './bootstrap.scss';
 
 import * as React from 'react';
-import {BrowserRouter as Router, Route, Link, Switch, RouteComponentProps} from 'react-router-dom';
+import {Route, Switch, RouteComponentProps} from 'react-router-dom';
 
 import Navigation from '../navigation/navigation';
 import Footer from '../footer/footer';
 import Home from '../../views/home/home';
 import About from '../../views/about/about';
+
+import ContactsApi from './../../services/contacts.service';
 
 interface BootstrapStateInterface {
   contacts: ContactInterface[];
@@ -42,6 +44,16 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
     });
   }
 
+  public componentDidMount() {
+    ContactsApi
+      .getContacts()
+        .then( res => {
+          const index = res.length > 0 ? 0 : null;
+
+          this.updateContacts(res, index);
+        });
+  }
+
   render() {
     return (
       <div className='container-fluid'>
@@ -51,7 +63,6 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
 
         <section className='row main'>
           { this.props.children }
-           {/*router moved in order to only manage state in one place*/}
           <Switch>
             <Route exact path={this.props.match.url} render={() => <Home
               contacts={this.state.contacts}
