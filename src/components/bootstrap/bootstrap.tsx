@@ -44,7 +44,7 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
     });
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     ContactsService
       .getContacts()
         .then( res => {
@@ -54,7 +54,7 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
         });
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div className='container-fluid'>
         <section className='row'>

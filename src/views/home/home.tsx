@@ -50,11 +50,11 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     });
   }
 
-  private updateContacts(contacts: ContactInterface[], index: number) {
+  private updateContacts(contacts: ContactInterface[], index: number): void {
     this.props.onListUpdate(contacts, index);
   }
 
-  private onNewContactSubmit(contact: ContactInterface) {
+  private onNewContactSubmit(contact: ContactInterface): void {
     if (contact.email) {
 
       // HTTP call to gravatar.
@@ -86,7 +86,7 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     });
   }
 
-  private selectContact(index: number) {
+  private selectContact(index: number): void {
     this.updateContacts(this.props.contacts, index);
   }
 
@@ -97,7 +97,7 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     return `${firstName}${_middleName}${_lastName}`;
   }
 
-  private renderContactCard (contact: ContactInterface) {
+  private renderContactCard (contact: ContactInterface): JSX.Element {
     if (contact) {
       return (
         <div className='card'>
@@ -119,7 +119,7 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     }
   }
 
-  private renderContactList (contacts: ContactInterface[]) {
+  private renderContactList (contacts: ContactInterface[]): JSX.Element {
     if (contacts.length > 0) {
       return (
         <ContactList
@@ -131,13 +131,13 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     }
   }
 
-  public componentWillReceiveProps(newProps: HomePropsInterface) {
+  public componentWillReceiveProps(newProps: HomePropsInterface): void {
     this.setState({
       currentContact: newProps.contacts[newProps.currentIndex]
     });
   }
 
-  render() {
+  render(): JSX.Element {
 
     return (
       <div className='container home'>

@@ -17,7 +17,7 @@ interface ContactInfoPropsInterface {
   clickHandler: Function;
 }
 
-function buildName(firstName: string, middleName: string, lastName: string) {
+function buildName(firstName: string, middleName: string, lastName: string): string {
   let _middleName: string = middleName ? ` ${middleName}` : '';
   let _lastName: string = lastName ? ` ${lastName}` : '';
 
