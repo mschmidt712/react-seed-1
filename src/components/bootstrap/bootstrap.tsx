@@ -9,7 +9,7 @@ import Footer from '../footer/footer';
 import Home from '../../views/home/home';
 import About from '../../views/about/about';
 
-import ContactsApi from './../../services/contacts.service';
+import ContactsService from './../../services/contacts.service';
 
 interface BootstrapStateInterface {
   contacts: ContactInterface[];
@@ -45,7 +45,7 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
   }
 
   public componentDidMount() {
-    ContactsApi
+    ContactsService
       .getContacts()
         .then( res => {
           const index = res.length > 0 ? 0 : null;

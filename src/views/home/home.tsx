@@ -6,7 +6,7 @@ import * as React from 'react';
 import ContactList from '../../components/contactList/contactList';
 import ContactListForm from '../../components/contactListForm/contactListForm';
 
-import ContactsApi from './../../services/contacts.service';
+import ContactsService from './../../services/contacts.service';
 
 interface ContactInterface {
   firstName: string;
@@ -56,25 +56,25 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
 
   private onNewContactSubmit(contact: ContactInterface) {
     if (contact.email) {
+
       // HTTP call to gravatar.
-      ContactsApi
+      ContactsService
         .getAvatar(contact.email)
-          .then(res => {
-            const avatar = res.data.entry[0].thumbnailUrl;
-            contact.image = avatar;
+        .then(url => {
+            contact.image = url;
 
             this.setState({
               currentContact: newContacts[contact.id]
             });
-          })
-          .catch(e => {
-            console.log('Error ==>', e);
-          });
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
     contact.id = this.props.contacts.length;
     const newContacts = [...this.props.contacts, contact];
 
-    ContactsApi
+    ContactsService
       .setContacts(newContacts)
       .then(contacts => {
         this.updateContacts(contacts, contact.id);

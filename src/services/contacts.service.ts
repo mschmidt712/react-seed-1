@@ -10,20 +10,19 @@ interface ContactInterface {
   phone?: string;
   image?: string;
 }
-class ContactsAPI {
-  constructor () {
-    this.getContacts = this.getContacts.bind(this);
-    this.setContacts = this.setContacts.bind(this);
-    this.getAvatar = this.getAvatar.bind(this);
+
+class ContactsService {
+  contacts?: ContactInterface[];
+
+  constructor (contacts?: ContactInterface[]) {
+    this.contacts = contacts;
   }
 
-  private contacts: ContactInterface[] = [];
-
-  public getContacts() {
+  getContacts(): Promise<ContactInterface[]> {
     return Promise.resolve(this.contacts);
   }
 
-  public setContacts(contacts: ContactInterface[]): Promise<ContactInterface[]> {
+  setContacts(contacts: ContactInterface[]): Promise<ContactInterface[]> {
     return new Promise ((resolve, reject) => {
       try {
         this.contacts = contacts;
@@ -34,13 +33,22 @@ class ContactsAPI {
     });
   }
 
-  public getAvatar(email: string) {
+  getAvatar(email: string): Promise<string> {
     const gravatarUrl = 'https://www.gravatar.com/';
     const emailHash = Md5.hashStr(email);
     const url = `${gravatarUrl}${emailHash}.json`;
 
-    return axios.get(url);
+    return new Promise((resolve, reject) => {
+      axios
+        .get(url)
+        .then(res => {
+          resolve(res.data.entry[0].thumbnailUrl);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
   }
 }
 
-export default new ContactsAPI();
+export default new ContactsService([]);
