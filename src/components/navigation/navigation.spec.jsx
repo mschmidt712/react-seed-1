@@ -1,14 +1,10 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import Navigation from './navigation';
-import { MemoryRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 describe('Navigation Component', () => {
-  const navigation = mount(
-    <MemoryRouter>
-      <Navigation />
-    </MemoryRouter>
-  );
+  const navigation = mount(<Navigation />);
 
   it('should have a <nav/> element', () => {
     const nav = navigation.find('nav');
@@ -46,9 +42,9 @@ describe('Navigation Component', () => {
         text: 'Home',
         path: '/'
       };
-      const newListItem = {
-        text: 'New Contact',
-        path: '/new'
+      const aboutListItem = {
+        text: 'About',
+        path: '/about'
       };
       let navList;
 
@@ -68,18 +64,18 @@ describe('Navigation Component', () => {
         expect(navList.find('ul').childAt(0).text()).toEqual(homeListItem.text);
       });
 
-      it(`should have first list item display ${newListItem.text} with href to ${newListItem.path}`, () => {
-        expect(navList.find('ul').childAt(1).text()).toEqual(newListItem.text);
+      it(`should have first list item display ${aboutListItem.text} with href to ${aboutListItem.path}`, () => {
+        expect(navList.find('ul').childAt(1).text()).toEqual(aboutListItem.text);
       });
 
       describe('navigation list item <li>', () => {
         const homeLinkEl = <Link className='nav-link' to='/'>Home</Link>;
-        const newLinkEl = <Link className='nav-link' to='/new'>New Contact</Link>;
-        let listHomeLink, listNewLink;
+        const aboutLinkEl = <Link className='nav-link' to='/about'>About</Link>;
+        let listHomeLink, listAboutLink;
 
         beforeEach(() => {
           listHomeLink = navList.find('ul').childAt(0).find('Link');
-          listNewLink = navList.find('ul').childAt(1).find('Link');
+          listAboutLink = navList.find('ul').childAt(1).find('Link');
         });
 
         it(`should have a <Link/> component for route ${homeListItem.path}`, () => {
@@ -89,11 +85,11 @@ describe('Navigation Component', () => {
           expect(listHomeLink.matchesElement(homeLinkEl)).toBeTruthy();
         });
 
-        it(`should have a <Link/> component for route ${newListItem.path}`, () => {
-          expect(listNewLink.length).toEqual(1);
-          expect(listNewLink.text()).toEqual(newListItem.text);
-          expect(listNewLink.props().to).toEqual('/new');
-          expect(listNewLink.matchesElement(newLinkEl)).toBeTruthy();
+        it(`should have a <Link/> component for route ${aboutListItem.path}`, () => {
+          expect(listAboutLink.length).toEqual(1);
+          expect(listAboutLink.text()).toEqual(aboutListItem.text);
+          expect(listAboutLink.props().to).toEqual('/about');
+          expect(listAboutLink.matchesElement(aboutLinkEl)).toBeTruthy();
         });
       });
 
