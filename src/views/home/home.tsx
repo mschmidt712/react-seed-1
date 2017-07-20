@@ -6,7 +6,7 @@ import * as React from 'react';
 import ContactList from '../../components/contactList/contactList';
 import ContactListForm from '../../components/contactListForm/contactListForm';
 
-import ContactsService from './../../services/contacts.service';
+import { getAvatar } from './../../services/contacts.service';
 
 interface ContactInterface {
   firstName: string;
@@ -20,7 +20,6 @@ interface ContactInterface {
 
 interface HomeStateInterface {
   isFormOpen: boolean;
-  currentContact: ContactInterface;
 }
 
 interface HomePropsInterface {
@@ -32,9 +31,9 @@ interface HomePropsInterface {
 export default class Home extends React.Component<HomePropsInterface, HomeStateInterface> {
   constructor(props: HomePropsInterface) {
     super(props);
+
     this.state = {
-      isFormOpen: false,
-      currentContact: null
+      isFormOpen: false
     };
   }
 
@@ -54,36 +53,29 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     this.props.onListUpdate(contacts, index);
   }
 
-  private onNewContactSubmit(contact: ContactInterface): void {
-    if (contact.email) {
-
-      // HTTP call to gravatar.
-      ContactsService
-        .getAvatar(contact.email)
-        .then(url => {
-            contact.image = url;
-
-            this.setState({
-              currentContact: newContacts[contact.id]
-            });
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    }
-    contact.id = this.props.contacts.length;
+  private setContacts(contact: ContactInterface): void {
     const newContacts = [...this.props.contacts, contact];
-
-    ContactsService
-      .setContacts(newContacts)
-      .then(contacts => {
-        this.updateContacts(contacts, contact.id);
-      });
-
+    this.props.onListUpdate(newContacts, contact.id);
     this.setState({
-      isFormOpen: false,
-      currentContact: newContacts[contact.id]
+      isFormOpen: false
     });
+  }
+
+  private onNewContactSubmit(contact: ContactInterface): void {
+    contact.id = this.props.contacts.length;
+
+    if (contact.email) {
+      getAvatar(contact.email)
+        .then((url: string) => {
+          contact.image = url;
+          this.setContacts(contact);
+        })
+        .catch((e: {}) => {
+          console.log('Error =>', e);
+        });
+    } else {
+      this.setContacts(contact);
+    }
   }
 
   private selectContact(index: number): void {
@@ -119,25 +111,8 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     }
   }
 
-  private renderContactList (contacts: ContactInterface[]): JSX.Element {
-    if (contacts.length > 0) {
-      return (
-        <ContactList
-          contacts={this.props.contacts}
-          activeContactIndex={this.props.currentIndex}
-          clickHandler={this.selectContact.bind(this)}
-        />
-      );
-    }
-  }
-
-  public componentWillReceiveProps(newProps: HomePropsInterface): void {
-    this.setState({
-      currentContact: newProps.contacts[newProps.currentIndex]
-    });
-  }
-
   render(): JSX.Element {
+    const { contacts, currentIndex } = this.props;
 
     return (
       <div className='container home'>
@@ -148,10 +123,16 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
               <button className='btn btn-success' onClick={this.openForm.bind(this)}>Add contact</button>
             </div>
             <div className='col-12 col-md-6 col-lg-4 text-center d-inline-block'>
-              { this.renderContactList(this.props.contacts) }
+              {
+                <ContactList
+                  contacts={contacts}
+                  activeContactIndex={currentIndex}
+                  clickHandler={this.selectContact.bind(this)}
+                />
+              }
             </div>
              <div className='col-md-6 col-lg-8 d-inline-block hidden-sm-down'>
-               { this.renderContactCard(this.state.currentContact) }
+               { this.renderContactCard(contacts[currentIndex]) }
              </div>
           </div>
         }
