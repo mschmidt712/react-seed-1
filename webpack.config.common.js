@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const chalk = require('chalk');
 
 module.exports = {
@@ -59,10 +58,7 @@ module.exports = {
       },
       {
         test: /\.(s*)css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: ['css-loader', 'sass-loader']
-        })
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -88,11 +84,6 @@ module.exports = {
     new ProgressBarPlugin({
       format: chalk.blue('  build ') + '[:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)',
       clear: false
-    }),
-
-    new ExtractTextPlugin({
-      filename: 'styles.css',
-      allChunks: true
     }),
 
     new webpack.ProvidePlugin({ // exposes non-modular vendor globals to webpack
