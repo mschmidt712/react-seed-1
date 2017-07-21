@@ -8,7 +8,7 @@
     "clean": "rimraf ./build && rimraf ./reports && mkdir ./reports && mkdir ./reports/test-results",
     "develop": "webpack-dev-server --open --config ./webpack.config.develop.js",
     "lint": "eslint *.js src/**/*.spec.jsx",
-    "serve": "npm run build && http-server ./build -o",
+    "serve": "npm run build && http-server ./build -o -p 9000",
     "test": "jest --coverage --config ./jest.config.json"
   },
   "repository": {
