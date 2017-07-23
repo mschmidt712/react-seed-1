@@ -2,8 +2,11 @@ import 'font-awesome/css/font-awesome.css';
 import './home.scss';
 
 import * as React from 'react';
+
 import ContactList from '../../components/contactList/contactList';
 import ContactListForm from '../../components/contactListForm/contactListForm';
+
+import { getAvatar } from './../../services/gravatar.service';
 
 interface ContactInterface {
   firstName: string;
@@ -12,11 +15,11 @@ interface ContactInterface {
   lastName?: string;
   phone?: string;
   id?: number;
+  image?: string;
 }
 
 interface HomeStateInterface {
   isFormOpen: boolean;
-  currentContact: ContactInterface;
 }
 
 interface HomePropsInterface {
@@ -28,9 +31,9 @@ interface HomePropsInterface {
 export default class Home extends React.Component<HomePropsInterface, HomeStateInterface> {
   constructor(props: HomePropsInterface) {
     super(props);
+
     this.state = {
-      isFormOpen: false,
-      currentContact: null
+      isFormOpen: false
     };
   }
 
@@ -46,33 +49,48 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     });
   }
 
-  private updateContacts(contacts: ContactInterface[], index: number) {
+  private updateContacts(contacts: ContactInterface[], index: number): void {
     this.props.onListUpdate(contacts, index);
   }
 
-  private onNewContactSubmit(contact: ContactInterface) {
-    contact.id = this.props.contacts.length;
+  private setContacts(contact: ContactInterface): void {
     const newContacts = [...this.props.contacts, contact];
-
-    this.updateContacts(newContacts, contact.id);
+    this.props.onListUpdate(newContacts, contact.id);
     this.setState({
-      isFormOpen: false,
-      currentContact: newContacts[contact.id]
+      isFormOpen: false
     });
   }
 
-  private selectContact(index: number) {
+  private onNewContactSubmit(contact: ContactInterface): void {
+    contact.id = this.props.contacts.length;
+
+    if (contact.email) {
+      getAvatar(contact.email)
+        .then((url: string) => {
+          contact.image = url;
+          this.setContacts(contact);
+        })
+        .catch(e => {
+          console.error(e);
+          this.setContacts(contact);
+        });
+    } else {
+      this.setContacts(contact);
+    }
+  }
+
+  private selectContact(index: number): void {
     this.updateContacts(this.props.contacts, index);
   }
 
   private buildName(firstName: string, middleName: string, lastName: string): string {
-    let _middleName: string = middleName ? ` ${middleName}` : '';
-    let _lastName: string = lastName ? ` ${lastName}` : '';
+    const _middleName: string = middleName ? ` ${middleName}` : '';
+    const _lastName: string = lastName ? ` ${lastName}` : '';
 
     return `${firstName}${_middleName}${_lastName}`;
   }
 
-  private renderContactCard (contact: ContactInterface) {
+  private renderContactCard (contact: ContactInterface): JSX.Element {
     if (contact) {
       return (
         <div className='card'>
@@ -81,11 +99,11 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
           </div>
           <ul className='list-group list-group-flush'>
             <li className='list-group-item'>
-              <span className='fa fa-phone text-muted c-info' data-toggle='tooltip' title={contact.phone}></span>
+              <span className='fa fa-phone text-muted c-info mr-1' data-toggle='tooltip' title={contact.phone}></span>
               <span className='visible-xs'> <span className='text-muted phone'>{ contact.phone}</span></span>
             </li>
             <li className='list-group-item'>
-              <span className='fa fa-comments text-muted c-info' data-toggle='tooltip' title={contact.email}></span>
+              <span className='fa fa-comments text-muted c-info mr-1' data-toggle='tooltip' title={contact.email}></span>
               <span className='visible-xs'> <span className='text-muted email'>{ contact.email}</span></span>
             </li>
           </ul>
@@ -94,25 +112,8 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
     }
   }
 
-  private renderContactList (contacts: ContactInterface[]) {
-    if (contacts && contacts.length > 0) {
-      return (
-        <ContactList
-          contacts={this.props.contacts}
-          activeContactIndex={this.props.currentIndex}
-          clickHandler={this.selectContact.bind(this)}
-        />
-      );
-    }
-  }
-
-  public componentWillReceiveProps(newProps: HomePropsInterface) {
-    this.setState({
-      currentContact: newProps.contacts[newProps.currentIndex]
-    });
-  }
-
-  render() {
+  render(): JSX.Element {
+    const { contacts, currentIndex } = this.props;
 
     return (
       <div className='container home'>
@@ -123,10 +124,16 @@ export default class Home extends React.Component<HomePropsInterface, HomeStateI
               <button className='btn btn-success' onClick={this.openForm.bind(this)}>Add contact</button>
             </div>
             <div className='col-12 col-md-6 col-lg-4 text-center d-inline-block'>
-              { this.renderContactList(this.props.contacts) }
+              {
+                <ContactList
+                  contacts={contacts}
+                  activeContactIndex={currentIndex}
+                  clickHandler={this.selectContact.bind(this)}
+                />
+              }
             </div>
-             <div className='col-md-6 col-lg-8 d-inline-block hidden-sm-down'>
-               { this.renderContactCard(this.state.currentContact) }
+             <div className='col-md-6 col-lg-8 d-inline-block hidden-sm-down h-75'>
+               { this.renderContactCard(contacts[currentIndex]) }
              </div>
           </div>
         }
