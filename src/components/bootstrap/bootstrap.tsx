@@ -2,6 +2,7 @@ import 'font-awesome/css/font-awesome.css';
 import './bootstrap.scss';
 
 import * as React from 'react';
+
 import Navigation from '../navigation/navigation';
 import Footer from '../footer/footer';
 
@@ -23,11 +24,13 @@ interface ContactInterface {
 }
 
 export default class Bootstrap extends React.Component<BootstrapPropsInterface, BootstrapStateInterface> {
+  contacts: ContactInterface[];
+
   constructor(props: BootstrapPropsInterface) {
     super(props);
     this.state = {
       contacts: [],
-      currentIndex: 0
+      currentIndex: null
     };
   }
 
@@ -38,7 +41,15 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
     });
   }
 
-  render() {
+  render(): JSX.Element {
+    const childrenWithProps = React.Children.map(this.props.children, (child: JSX.Element) =>
+      React.cloneElement(child, {
+        contacts: this.state.contacts,
+        onListUpdate: this.updateContacts.bind(this),
+        currentIndex: this.state.currentIndex
+      })
+    );
+
     return (
       <div className='container-fluid'>
         <section className='row'>
@@ -46,7 +57,7 @@ export default class Bootstrap extends React.Component<BootstrapPropsInterface, 
         </section>
 
         <section className='row main'>
-          { this.props.children }
+          { childrenWithProps }
         </section>
 
         <section className='row'>

@@ -1,6 +1,7 @@
 import './navigation.scss';
 import * as React from 'react';
 import { Link } from 'react-router';
+import './navigation.scss';
 
 interface NavigationPropsInterface {
 }
@@ -9,7 +10,7 @@ interface NavigationStateInterface {
 
 class Navigation extends React.Component<NavigationPropsInterface, NavigationStateInterface> {
 
-  render() {
+  render(): JSX.Element {
     return (
       <nav className='navbar navbar-toggleable-md navbar-inverse bg-inverse w-100'>
         <div className='container'>
